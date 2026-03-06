@@ -1,24 +1,22 @@
-using Microsoft.EntityFrameworkCore;
-using TaskManagementSystem.Data;
-using TaskManagementSystem.interfaces;
-using TaskManagementSystem.Repository;
-using TaskManagementSystem.services;
+
+
+using TaskManagementSystem.Extension;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddJsonSerilize();
+builder.Services.AddDbConntextExtention(builder.Configuration);
+builder.Services.AddService();
+builder.Services.AddCustomerRatelimiting();
+builder.Services.AddJWT(builder.Configuration);
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = "localhost:6379";
+    options.InstanceName = "MyApiCache:";
+});
 
-
-builder.Services.AddScoped<IEmployeeRePository, EmployeeRepository>();
-builder.Services.AddScoped<IEmployeeServices, EmployeeService>();
-builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
-builder.Services.AddScoped<IProjectServices, ProjectService>();
-builder.Services.AddScoped<ITaskRepository, TaskRepository>();
-builder.Services.AddScoped<ITaskServices, TaskService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -31,9 +29,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseRouting();
+app.UseRateLimiter();
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

@@ -31,4 +31,14 @@ public class ProjectRepository : IProjectRepository
     {
         return await _appDbContext.Projects.AsNoTracking().ToListAsync();
     }
+
+    public async Task<List<projectModel>> GetAllProjectsWithTask()
+    {
+        return await _appDbContext.Projects.Include(x => x.TaskManages).AsNoTracking().ToListAsync();
+    }
+
+    public async Task<projectModel> GetSpecificProjectsWithTask(int id)
+    {
+        return await _appDbContext.Projects.Include(x => x.TaskManages).FirstOrDefaultAsync(x=>x.Id == id);
+    }
 }
