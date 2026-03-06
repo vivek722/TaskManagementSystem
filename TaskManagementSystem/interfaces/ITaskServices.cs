@@ -1,4 +1,5 @@
 ﻿using TaskManagementSystem.Model;
+using TaskManagementSystem.ResponseDto;
 
 namespace TaskManagementSystem.interfaces;
 
@@ -11,7 +12,10 @@ public interface ITaskServices
     Task<List<TaskManage>> getProjectAllTask(int projectid);
     Task<List<TaskManage>> getEmployeeAllTask(int employeeid);
 
-    Task<TaskManage> getEmployeeWithWorkHighstTask(int employeeid);
-    Task<TaskManage> TotalTaskbyProject(int projectid);
+    Task<int> getEmployeeWithWorkHighstTask(int employeeid);
+    Task<int> TotalTaskbyProject(int projectid);
+    Task<List<TaskManage>> getEmployeeProirityWiseTask(int employeeId,Proirity proirity);
+    Task<List<EmployeeTaskStatsDto>> getAllEmployeeTotaltask();
+    Task<List<EmployeeTaskAssinerDto>> getTaskAssinerWithAssienTo();
 
 }

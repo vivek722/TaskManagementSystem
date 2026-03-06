@@ -28,7 +28,7 @@ public class TaskController : Controller
     [HttpPost("api/AddTasks")]
     public async Task<IActionResult> AddTasks(TaskDto taskDto)
     {
-        if(taskDto != null)
+        if (taskDto != null)
         {
             var task = new TaskManage
             {
@@ -66,5 +66,68 @@ public class TaskController : Controller
             return Ok(result);
         }
         return BadRequest("Invalid Project Data");
+    }
+
+    [HttpGet("api/TotalTaskbyProject")]
+    public async Task<IActionResult> TotalTaskbyProject(int projectId)
+    {
+        var Alltask = await taskServices.TotalTaskbyProject(projectId);
+        if (Alltask != null)
+        {
+            return Ok(Alltask);
+        }
+        return NotFound("task Not found");
+    }
+
+    [HttpGet("api/getEmployeeAllTasks")]
+    public async Task<IActionResult> getEmployeeAllTasks(int employeeId)
+    {
+        var Alltask = await taskServices.getEmployeeAllTask(employeeId);
+        if (Alltask != null)
+        {
+            return Ok(Alltask);
+        }
+        return NotFound("task Not found");
+    }
+
+    [HttpGet("api/getProjectAllTask")]
+    public async Task<IActionResult> getProjectAllTask(int projectId)
+    {
+        var Alltask = await taskServices.getProjectAllTask(projectId);
+        if (Alltask != null)
+        {
+            return Ok(Alltask);
+        }
+        return NotFound("task Not found");
+    }
+    [HttpGet("api/getEmployeeProirityWiseTask")]
+    public async Task<IActionResult> getEmployeeProirityWiseTask(int employeId, Proirity proirity)
+    {
+        var Alltask = await taskServices.getEmployeeProirityWiseTask(employeId, proirity);
+        if (Alltask != null)
+        {
+            return Ok(Alltask);
+        }
+        return NotFound("task Not found");
+    }
+    [HttpGet("api/getEmployeeWithWorkHighstTask")]
+    public async Task<IActionResult> getEmployeeWithWorkHighstTask(int employeId)
+    {
+        var Alltask = await taskServices.getEmployeeWithWorkHighstTask(employeId);
+        if (Alltask != null)
+        {
+            return Ok(Alltask);
+        }
+        return NotFound("task Not found");
+    }
+    [HttpGet("api/getAllEmployeeTotaltask")]
+    public async Task<IActionResult> getAllEmployeeTotaltask()
+    {
+        var Alltask = await taskServices.getAllEmployeeTotaltask();
+        if (Alltask != null)
+        {
+            return Ok(Alltask);
+        }
+        return NotFound("task Not found");
     }
 }

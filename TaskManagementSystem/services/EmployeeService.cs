@@ -25,4 +25,14 @@ public class EmployeeService : IEmployeeServices
     {
         return await _employeeRePository.GetAllEmployees();
     }
+
+    public async Task<List<EmployeeModel>> GetAllEmployeesWithProjectAndTask()
+    {
+        return await _employeeRePository.GetAllEmployeesWithProjectAndTask();
+    }
+
+    public async Task<EmployeeModel> GetByIdEmployeeWithProjectAndTask(int id)
+    {
+      return await _employeeRePository.GetByIdEmployeeWithProjectAndTask(id);
+    }
 }

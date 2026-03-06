@@ -42,4 +42,25 @@ public class ProjectController : Controller
         }
         return BadRequest("Invalid Project Data");
     }
+    [HttpGet("api/GetAllPRojectWithTask")]
+    public async Task<IActionResult> GetAllPRojectWithTask()
+    {
+        var Data = await projectServices.GetAllProjectsWithTask();
+        if(Data != null)
+        {
+            return Ok(Data);
+        }
+        return NotFound("any Project not found");
+    }
+    [HttpGet("api/GetspecificProjectWithTask")]
+    public async Task<IActionResult> getSpecificProjectAllTask(int id)
+    {
+
+        var data = projectServices.GetSpecificProjectsWithTask(id);
+        if(data != null)
+        {
+            return Ok(data);
+        }
+        return NoContent();
+    }
 }

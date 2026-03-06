@@ -32,5 +32,22 @@ public class EmployeeRepository : IEmployeeRePository
     {
         return await _appDbContext.Employees.AsNoTracking().ToListAsync();
     }
-   
+
+    public Task<List<EmployeeModel>> GetAllEmployeesWithProjectAndTask()
+    {
+       return _appDbContext.Employees
+            .Include(e => e.ProjectModel)
+            .ThenInclude(p => p.TaskManages)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
+    public Task<EmployeeModel> GetByIdEmployeeWithProjectAndTask(int id)
+    {
+        return _appDbContext.Employees
+            .Include(e => e.ProjectModel)
+            .ThenInclude(p => p.TaskManages)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(e => e.Id == id);
+    }
 }
