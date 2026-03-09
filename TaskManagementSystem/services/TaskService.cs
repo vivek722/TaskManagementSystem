@@ -4,7 +4,7 @@ using TaskManagementSystem.ResponseDto;
 
 namespace TaskManagementSystem.services;
 
-public class TaskService :              
+public class TaskService : ITaskServices              
 {
     private readonly ITaskRepository taskRepository;
     public TaskService(ITaskRepository taskRepository)
@@ -26,9 +26,29 @@ public class TaskService :
       return await taskRepository.getAllEmployeeTotaltask();
     }
 
+    public async Task<List<TaskManage>> getAllProirityWiseTask(Proirity proirity)
+    {
+        return await taskRepository.getAllProirityWiseTask(proirity);
+    }
+
+    public Task<List<TaskManage>> getAllProjectProirityWiseTask(int projectId, Proirity proirity)
+    {
+        return taskRepository.getAllProjectProirityWiseTask(projectId, proirity);
+    }
+
+    public async Task<List<TaskManage>> getAllProjectStatusWiseTask(status status)
+    {
+        return await taskRepository.getAllProjectStatusWiseTask(status);
+    }
+
     public async Task<List<TaskManage>> GetAllTask()
     {
         return await taskRepository.GetAllTask();
+    }
+
+    public async Task<TaskManage> GetByIdTask(int id)
+    {
+        return await taskRepository.GetByIdTask(id);
     }
 
     public async Task<List<TaskManage>> getEmployeeAllTask(int employeeid)
@@ -41,23 +61,38 @@ public class TaskService :
         return await taskRepository.getEmployeeProirityWiseTask(employeeId, proirity);
     }
 
+    public async Task<List<TaskManage>> getEmployeeTaskStatusWiseTask(int employeeId, status status)
+    {
+        return await taskRepository.getEmployeeTaskStatusWiseTask(employeeId, status);
+    }
+
     public async Task<int> getEmployeeWithWorkHighstTask(int employeeid)
     {
         return await taskRepository.getEmployeeWithWorkHighstTask(employeeid);
     }
 
-    public Task<List<TaskManage>> getProjectAllTask(int projectid)
+    public async Task<List<TaskManage>> getProjectAllTask(int projectid)
     {
-        return taskRepository.getProjectAllTask(projectid);
+        return await taskRepository.getProjectAllTask(projectid);
     }
 
-    public async Task<List<EmployeeTaskAssinerDto>> getTaskAssinerWithAssienTo()
+    public async Task<List<TaskManage>> getSpacificProjectStatusWiseTask(int projectId, status status)
     {
-       return await taskRepository.getTaskAssinerWithAssienTo();
+        return await taskRepository.getSpacificProjectStatusWiseTask(projectId, status);
     }
+
+    //public async Task<List<EmployeeTaskAssinerDto>> getTaskAssinerWithAssienTo()
+    //{
+    //   return await taskRepository.getTaskAssinerWithAssienTo();
+    //}
 
     public async Task<int> TotalTaskbyProject(int projectid)
     {
         return await taskRepository.TotalTaskbyProject(projectid);
+    }
+
+    public async Task<bool> UpdateTask(int id, TaskManage taskManage)
+    {
+        return await taskRepository.UpdateTask(id, taskManage);
     }
 }

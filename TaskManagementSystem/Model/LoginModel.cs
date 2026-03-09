@@ -2,7 +2,8 @@
 
 public class LoginModel
 {
-    public int email { get; set; }
+    public string email { get; set; }
 
-    public int password { get; set; }
+    public string password { get; set; }
 }
+        

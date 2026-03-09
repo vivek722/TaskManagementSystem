@@ -42,6 +42,16 @@ public class EmployeeRepository : IEmployeeRePository
             .ToListAsync();
     }
 
+    public async Task<EmployeeModel> GetByEmilEmployee(string email)
+    {
+        return await _appDbContext.Employees.AsNoTracking().FirstOrDefaultAsync(x => x.Email == email);
+    }
+
+    public async Task<EmployeeModel> GetByIdEmployee(int id)
+    {
+        return await _appDbContext.Employees.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+    }
+
     public Task<EmployeeModel> GetByIdEmployeeWithProjectAndTask(int id)
     {
         return _appDbContext.Employees
@@ -49,5 +59,19 @@ public class EmployeeRepository : IEmployeeRePository
             .ThenInclude(p => p.TaskManages)
             .AsNoTracking()
             .FirstOrDefaultAsync(e => e.Id == id);
+    }
+
+    public async Task<bool> UpdateEmployee(int id, EmployeeModel employee)
+    {
+        if (id != null)
+        {
+            var data = await GetByIdEmployee(id);
+            data.Name = employee.Name;
+            data.Email = employee.Email;
+            _appDbContext.Employees.Update(data);
+            await _appDbContext.SaveChangesAsync();
+            return true;
+        }
+        return false;
     }
 }

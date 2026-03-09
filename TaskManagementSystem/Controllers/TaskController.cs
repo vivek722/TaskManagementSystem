@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TaskManagementSystem.DtoModels;
 using TaskManagementSystem.interfaces;
 using TaskManagementSystem.Model;
@@ -10,9 +12,11 @@ namespace TaskManagementSystem.Controllers;
 public class TaskController : Controller
 {
     private readonly ITaskServices taskServices;
-    public TaskController(ITaskServices taskServices)
+    private readonly ISubTaskService subTaskService;
+    public TaskController(ITaskServices taskServices, ISubTaskService subTaskService)
     {
         this.taskServices = taskServices;
+        this.subTaskService = subTaskService;
     }
     [HttpGet("api/getAllTasks")]
     public async Task<IActionResult> getAllTasks()
@@ -24,11 +28,13 @@ public class TaskController : Controller
         }
         return NotFound("task Not found");
     }
-
+    [Authorize(Roles = "Admin,Project_Manager")]
     [HttpPost("api/AddTasks")]
-    public async Task<IActionResult> AddTasks(TaskDto taskDto)
+    public async Task<IActionResult> AddTasks([FromBody] TaskDto taskDto)
     {
-        if (taskDto != null)
+        if (taskDto == null)
+            return BadRequest("Invalid Task Data");
+        try
         {
             var task = new TaskManage
             {
@@ -36,38 +42,46 @@ public class TaskController : Controller
                 Description = taskDto.Description,
                 Assignerid = taskDto.Assignerid,
                 assignToId = taskDto.assignToid,
-                CreatedAt = DateTime.Now,
+                CreatedAt = DateTime.UtcNow,
                 dueDate = taskDto.dueDate,
                 employeeId = taskDto.employeeId,
                 Proirity = taskDto.Proirity,
                 StartDate = taskDto.StartDate,
                 EndDate = taskDto.EndDate,
-                projectId = taskDto.projectId,
-
+                taskStatus = taskDto.taskStatus,
+                projectId = taskDto.projectId
             };
-            //foreach (var stask in taskDto.subTaskManegs) {
-            //    var subtask = new SubTaskManeg
-            //    {
 
-            //        Name = stask.Name,
-            //        Description = stask.Description,
-            //        Assigner = stask.Assigner,
-            //        assignTo = stask.assignTo,
-            //        dueDate = stask.dueDate,
-            //        Proirity = stask.Proirity,
-            //        StartDate = stask.StartDate,
-            //        EndDate = stask.EndDate,
+            await taskServices.AddTask(task);
 
-            //    };
-            //}
+            if (taskDto.subTaskManegs != null && taskDto.subTaskManegs.Any())
+            {
+                foreach (var stask in taskDto.subTaskManegs)
+                {
+                    var subtask = new SubTaskManeg
+                    {
+                        Name = stask.Name,
+                        TaskManageid = task.Id,
+                        Description = stask.Description,
+                        Assignerid = taskDto.Assignerid,
+                        assignToid = taskDto.assignToid,
+                        dueDate = stask.dueDate,
+                        Proirity = stask.Proirity,
+                        StartDate = stask.StartDate,
+                        EndDate = stask.EndDate,
+                        taskStatus = stask.taskStatus
+                    };
 
-
-            var result = await taskServices.AddTask(task);
-            return Ok(result);
+                    await subTaskService.AddTask(subtask);
+                }
+            }
+            return Ok(task);
         }
-        return BadRequest("Invalid Project Data");
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
     }
-
     [HttpGet("api/TotalTaskbyProject")]
     public async Task<IActionResult> TotalTaskbyProject(int projectId)
     {
@@ -120,6 +134,28 @@ public class TaskController : Controller
         }
         return NotFound("task Not found");
     }
+
+    [HttpGet("api/getAllTaskBaseOnPrority")]
+    public async Task<IActionResult> getAllTaskBaseOnPrority(Proirity proirity)
+    {
+        var Alltask = await taskServices.getAllProirityWiseTask(proirity);
+        if (Alltask != null)
+        {
+            return Ok(Alltask);
+        }
+        return NotFound("task Not found");
+    }
+
+    [HttpGet("api/getProjectWiseHighProrityTask")]
+    public async Task<IActionResult> getProjectWiseHighProrityTask(int projectid, Proirity proirity)
+    {
+        var Alltask = await taskServices.getAllProjectProirityWiseTask(projectid, proirity);
+        if (Alltask != null)
+        {
+            return Ok(Alltask);
+        }
+        return NotFound("task Not found");
+    }
     [HttpGet("api/getAllEmployeeTotaltask")]
     public async Task<IActionResult> getAllEmployeeTotaltask()
     {
@@ -130,4 +166,46 @@ public class TaskController : Controller
         }
         return NotFound("task Not found");
     }
+    [HttpGet("api/getEmployeeStatusWiseTask")]
+    public async Task<IActionResult> getEmployeeStatusWiseTask(int employeId, status status)
+    {
+        var Alltask = await taskServices.getEmployeeTaskStatusWiseTask(employeId, status);
+        if (Alltask != null)
+        {
+            return Ok(Alltask);
+        }
+        return NotFound("task Not found");
+    }
+    [HttpGet("api/GetAllStatusWiseTask")]
+    public async Task<IActionResult> GetAllStatusWiseTask(status status)
+    {
+        var Alltask = await taskServices.getAllProjectStatusWiseTask(status);
+        if (Alltask != null)
+        {
+            return Ok(Alltask);
+        }
+        return NotFound("task Not found");
+    }
+    [HttpGet("api/GetProjectStatusWiseTask")]
+    public async Task<IActionResult> GetProjectStatusWiseTask(int projectid, status status)
+    {
+        var Alltask = await taskServices.getSpacificProjectStatusWiseTask(projectid, status);
+        if (Alltask != null)
+        {
+            return Ok(Alltask);
+        }
+        return NotFound("task Not found");
+    }
+    //    [HttpGet("api/getTaskAssignerWithAssignTo")]
+    //    public async Task<IActionResult> getTaskAssignerWithAssignTo()
+    //    {
+    //        var alltask = await taskServices.getTaskAssinerWithAssienTo();
+    //        if (alltask != null)
+    //        {
+    //            return Ok(alltask);
+    //        }
+    //        return NotFound("task Not found");
+    //    }
+    //}
+
 }

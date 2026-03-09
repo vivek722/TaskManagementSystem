@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TaskManagementSystem.DtoModels;
 using TaskManagementSystem.interfaces;
 using TaskManagementSystem.Model;
@@ -24,6 +25,7 @@ public class ProjectController : Controller
         return NotFound("No Projects Found");
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("api/AddProjects")]
     public async Task<IActionResult> AddProjects([FromBody] Projectdto projectDto)
     {
@@ -35,7 +37,7 @@ public class ProjectController : Controller
                 Description = projectDto.Description,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = null,
-                employeeId = projectDto.employeeId
+                employeeId = projectDto.ProjectManagerId
             };
             var result = await projectServices.AddProject(project);
             return Ok(result);

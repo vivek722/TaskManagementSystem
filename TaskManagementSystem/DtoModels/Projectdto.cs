@@ -7,5 +7,5 @@ public class Projectdto
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
 
-    public int employeeId { get; set; }
+    public int ProjectManagerId { get; set; }
 }

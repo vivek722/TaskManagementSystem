@@ -12,7 +12,7 @@ using TaskManagementSystem.Data;
 namespace TaskManagementSystem.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260303114438_Table_init")]
+    [Migration("20260309100709_Table_init")]
     partial class Table_init
     {
         /// <inheritdoc />
@@ -46,6 +46,10 @@ namespace TaskManagementSystem.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("role")
                         .HasColumnType("int");
@@ -104,6 +108,9 @@ namespace TaskManagementSystem.Migrations
                     b.Property<bool>("status")
                         .HasColumnType("bit");
 
+                    b.Property<int>("taskStatus")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("TaskManageid");
@@ -159,6 +166,9 @@ namespace TaskManagementSystem.Migrations
 
                     b.Property<bool>("status")
                         .HasColumnType("bit");
+
+                    b.Property<int>("taskStatus")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

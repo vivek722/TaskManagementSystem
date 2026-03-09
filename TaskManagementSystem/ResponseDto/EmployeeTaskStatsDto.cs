@@ -10,5 +10,5 @@ public class EmployeeTaskAssinerDto
 {
     public string AssinerName { get; set; }
     public string AssinerToName { get; set; }
-    public int TotalTasks { get; set; }
+    public string Task { get; set; }
 }

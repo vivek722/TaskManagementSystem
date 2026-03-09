@@ -30,8 +30,18 @@ public class ProjectService : IProjectServices
         return await _projectRepository.GetAllProjectsWithTask();
     }
 
+    public async Task<projectModel> GetByIdProjet(int id)
+    {
+        return await _projectRepository.GetByIdProjet(id);
+    }
+
     public async Task<projectModel> GetSpecificProjectsWithTask(int id)
     {
         return await _projectRepository.GetSpecificProjectsWithTask(id);
+    }
+
+    public async Task<bool> UpdateProject(int id, projectModel project)
+    {
+        return await _projectRepository.UpdateProject(id, project);
     }
 }
