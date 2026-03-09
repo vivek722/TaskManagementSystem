@@ -37,8 +37,32 @@ public class ProjectRepository : IProjectRepository
         return await _appDbContext.Projects.Include(x => x.TaskManages).AsNoTracking().ToListAsync();
     }
 
+    public async Task<projectModel> GetByIdProjet(int id)
+    {
+        return await _appDbContext.Projects.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+    }
+
     public async Task<projectModel> GetSpecificProjectsWithTask(int id)
     {
         return await _appDbContext.Projects.Include(x => x.TaskManages).FirstOrDefaultAsync(x=>x.Id == id);
+    }
+
+    public async Task<bool> UpdateProject(int id, projectModel project)
+    {
+        var Data = await GetByIdProjet(id);
+        if(Data != null)
+        {
+            Data.Name = project.Name;
+            Data.status = project.status;
+            Data.StartDate = project.StartDate;
+            Data.Description = project.Description;
+            Data.EndDate = project.EndDate;
+
+            _appDbContext.Projects.Update(Data);
+            await _appDbContext.SaveChangesAsync();
+            return true;
+        }
+
+        return false;
     }
 }

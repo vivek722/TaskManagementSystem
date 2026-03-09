@@ -2,6 +2,7 @@
 using TaskManagementSystem.Repository;
 using TaskManagementSystem.services;
 using TaskManagementSystem.Utility.CacheService;
+using TaskManagementSystem.Utility.JWTTokenGenrator;
 
 namespace TaskManagementSystem.Extension;
 
@@ -16,8 +17,10 @@ public static class ServiceExtention
         services.AddScoped<IProjectServices, ProjectService>();
         services.AddScoped<ITaskRepository, TaskRepository>();
         services.AddScoped<ITaskServices, TaskService>();
+        services.AddScoped<ISubTaskRepository, SubTaskRepository>();
+        services.AddScoped<ISubTaskService, SubTaskService>();
         services.AddScoped<ICacheService, CacheService>();
-
+        services.AddScoped<GenrateJWTTokenGenrater>();
         return services;
     }
 }

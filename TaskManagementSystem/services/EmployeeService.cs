@@ -31,8 +31,23 @@ public class EmployeeService : IEmployeeServices
         return await _employeeRePository.GetAllEmployeesWithProjectAndTask();
     }
 
+    public async Task<EmployeeModel> GetByEmilEmployee(string email)
+    {
+        return await _employeeRePository.GetByEmilEmployee(email);
+    }
+
+    public Task<EmployeeModel> GetByIdEmployee(int id)
+    {
+        return _employeeRePository.GetByIdEmployee(id);
+    }
+
     public async Task<EmployeeModel> GetByIdEmployeeWithProjectAndTask(int id)
     {
       return await _employeeRePository.GetByIdEmployeeWithProjectAndTask(id);
+    }
+
+    public async Task<bool> UpdateEmployee(int id, EmployeeModel employee)
+    {
+        return  await _employeeRePository.UpdateEmployee(id, employee);
     }
 }

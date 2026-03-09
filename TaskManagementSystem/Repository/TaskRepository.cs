@@ -43,13 +43,32 @@ public class TaskRepository : ITaskRepository
             .OrderByDescending(x => x.TotalTasks)
             .ToListAsync();
 
-
         return employeeStats;
+    }
+
+    public async Task<List<TaskManage>> getAllProirityWiseTask(Proirity proirity)
+    {
+        return await _appDbContext.TaskManages.Where(x => x.Proirity == proirity).AsNoTracking().ToListAsync();
+    }
+
+    public async Task<List<TaskManage>> getAllProjectProirityWiseTask(int projectId, Proirity proirity)
+    {
+        return await _appDbContext.TaskManages.Where(x => x.Proirity == proirity && x.projectId == projectId).AsNoTracking().ToListAsync();
+    }
+
+    public async Task<List<TaskManage>> getAllProjectStatusWiseTask(status status)
+    {
+        return await _appDbContext.TaskManages.Where(x => x.taskStatus == status).ToListAsync();
     }
 
     public async Task<List<TaskManage>> GetAllTask()
     {
        return await _appDbContext.TaskManages.AsNoTracking().ToListAsync();
+    }
+
+    public async Task<TaskManage> GetByIdTask(int id)
+    {
+        return await _appDbContext.TaskManages.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task<List<TaskManage>> getEmployeeAllTask(int employeeid)
@@ -60,6 +79,11 @@ public class TaskRepository : ITaskRepository
     public async Task<List<TaskManage>> getEmployeeProirityWiseTask(int employeeId, Proirity proirity)
     {
         return await _appDbContext.TaskManages.Where(x => x.Id == employeeId && x.Proirity == proirity).ToListAsync();
+    }
+
+    public async Task<List<TaskManage>> getEmployeeTaskStatusWiseTask(int employeeId, status status)
+    {
+        return await _appDbContext.TaskManages.Where(x => x.Id == employeeId && x.taskStatus == status).ToListAsync();
     }
 
     public async Task<int> getEmployeeWithWorkHighstTask(int employeeid)
@@ -77,30 +101,51 @@ public class TaskRepository : ITaskRepository
         return _appDbContext.TaskManages.Include(x=>x.ProjectModel).Where(x=>x.ProjectModel.Id == projectid).AsNoTracking().ToListAsync();
     }
 
-    public async Task<List<EmployeeTaskAssinerDto>> GetTaskAssignerWithAssignTo()
+    public async Task<List<TaskManage>> getSpacificProjectStatusWiseTask(int projectId, status status)
     {
-        var result = await (
-            from task in _appDbContext.TaskManages
-            join assigner in _appDbContext.Employees
-                on task.Assignerid equals assigner.Id
-            join assignee in _appDbContext.Employees
-                on task.assignToId equals assignee.Id
-            group new { task, assignee } by assigner.Name into g
-            select new EmployeeTaskAssinerDto
-            {
-                AssinerName = g.Key,
-                AssinerToName => g.assignee.Name,
-                TotalTasks = g.Count()
-            })
-            .OrderByDescending(x => x.TotalTasks)
-            .ToListAsync();
-
-        return result;
+        return await _appDbContext.TaskManages.Where(x => x.projectId == projectId && x.taskStatus == status).ToListAsync();
     }
+
+    //public async Task<List<EmployeeTaskAssinerDto>> getTaskAssinerWithAssienTo()
+    //{
+    //    var employeeStats = await _appDbContext.Employees
+    //         .GroupJoin(
+    //             _appDbContext.TaskManages,
+    //             emp => emp.Id,
+    //             task => task.assignToId,
+    //             (emp, tasks) => new EmployeeTaskAssinerDto
+    //             {
+    //                 AssinerName = emp.Name,
+    //                 AssinerToName = tasks.n,
+    //             })
+    //         .OrderByDescending(x => x.TotalTasks)
+    //         .ToListAsync();
+
+    //    return result;
+    //}
+
     public async Task<int> TotalTaskbyProject(int projectid)
     {
         return await _appDbContext.TaskManages
         .Where(x => x.projectId == projectid)
         .CountAsync();
+    }
+
+    public async Task<bool> UpdateTask(int id, TaskManage taskManage)
+    {
+        var data = await GetByIdTask(id);
+        if(data != null)
+            {
+            data.Name = taskManage.Name;
+            data.Description = taskManage.Description;
+            data.dueDate = taskManage.dueDate;
+            data.StartDate = taskManage.StartDate;
+            data.EndDate = taskManage.EndDate;
+            data.Assignerid = taskManage.Assignerid;
+            data.assignToId = taskManage.assignToId;
+            data. = taskManage.;
+            data.Assignerid = taskManage.Assignerid;
+
+        }
     }
 }

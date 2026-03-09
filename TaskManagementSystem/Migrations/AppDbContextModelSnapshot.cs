@@ -44,6 +44,10 @@ namespace TaskManagementSystem.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("role")
                         .HasColumnType("int");
 
@@ -101,6 +105,9 @@ namespace TaskManagementSystem.Migrations
                     b.Property<bool>("status")
                         .HasColumnType("bit");
 
+                    b.Property<int>("taskStatus")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("TaskManageid");
@@ -156,6 +163,9 @@ namespace TaskManagementSystem.Migrations
 
                     b.Property<bool>("status")
                         .HasColumnType("bit");
+
+                    b.Property<int>("taskStatus")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

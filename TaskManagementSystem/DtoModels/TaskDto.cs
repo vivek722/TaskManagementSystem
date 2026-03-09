@@ -13,8 +13,11 @@ public class TaskDto
     public Proirity Proirity { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
+    public status taskStatus { get; set; }
     public int? employeeId { get; set; }
     public int projectId { get; set; }
+
+    public List<SubTaskManegdto> subTaskManegs { get; set; }
 }
 
 public class SubTaskManegdto
@@ -28,5 +31,6 @@ public class SubTaskManegdto
     public Proirity Proirity { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
+    public status taskStatus { get; set; }
     public int TaskManageid { get; set; }
 }

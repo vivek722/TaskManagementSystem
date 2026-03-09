@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using TaskManagementSystem.DtoModels;
 using TaskManagementSystem.interfaces;
@@ -38,17 +39,20 @@ public class EmployeeController : Controller
         }
         return NotFound("No Employees Found");
     }
-
+    //[Authorize(Roles = "Admin")]
     [HttpPost("/Addemployees")]
     public async Task<IActionResult> AddEmployees([FromBody] EmployeeDto employeeDto)
     {
         if (employeeDto != null)
         {
+            var password = BCrypt.Net.BCrypt.HashPassword(employeeDto.password);
+
             var employee = new EmployeeModel
             {
                 Name = employeeDto.Name,
                 Email = employeeDto.Email,
                 role = employeeDto.role,
+                password = password,
                 status = true,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = null
@@ -77,5 +81,39 @@ public class EmployeeController : Controller
             return Ok(employee);
         }
         return NotFound("No Employees Found");
+    }
+    [HttpGet("/getEmployeeById")]
+    public async Task<IActionResult> getEmployeeById(int id)
+    {
+        var employee = await _employeeServices.GetByIdEmployee(id);
+        if (employee != null)
+        {
+            return Ok(employee);
+        }
+        return NotFound("No Employees Found");
+    }
+
+    [HttpPut("UpdateEmployee/{id}")]
+    public async Task<IActionResult> UpdateEmployees([FromRoute] int id, [FromBody] EmployeeDto employeeDto)
+    {
+        if (employeeDto != null)
+        {
+            var employee = new EmployeeModel
+            {
+                Id = id,
+                Name = employeeDto.Name,
+                Email = employeeDto.Email,
+                role = employeeDto.role,
+                status = true,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = null
+            };
+
+            var result = await _employeeServices.UpdateEmployee(id, employee);
+
+            return Ok(result);
+        }
+
+        return BadRequest("Invalid Employee Data");
     }
 }

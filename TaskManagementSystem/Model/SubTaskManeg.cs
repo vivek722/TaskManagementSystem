@@ -13,7 +13,7 @@ public class SubTaskManeg : BaseClass
     public DateTime StartDate { get; set; }
 
     public DateTime EndDate { get; set; }
-
+    public status taskStatus { get; set; }
     public int TaskManageid  { get; set; }
     public TaskManage TaskManage { get; set; }
 }
