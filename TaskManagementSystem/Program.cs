@@ -1,6 +1,7 @@
 
 
 using TaskManagementSystem.Extension;
+using TaskManagementSystem.MiddelWare;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,11 +12,8 @@ builder.Services.AddDbConntextExtention(builder.Configuration);
 builder.Services.AddService();
 builder.Services.AddCustomerRatelimiting();
 builder.Services.AddJWT(builder.Configuration);
-builder.Services.AddStackExchangeRedisCache(options =>
-{
-    options.Configuration = "localhost:6379";
-    options.InstanceName = "MyApiCache:";
-});
+builder.Services.AddRedishCache(builder.Configuration);
+builder.Services.AutoMapExtention();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -35,7 +33,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseMiddleware<ExceptionMiddleware>();
 app.MapControllers();
 
 app.Run();

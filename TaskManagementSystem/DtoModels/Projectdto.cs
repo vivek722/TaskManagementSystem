@@ -1,6 +1,6 @@
 ﻿namespace TaskManagementSystem.DtoModels;
 
-public class Projectdto
+public class projectDto
 {
     public string Name { get; set; }
     public string Description { get; set; }
